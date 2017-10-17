@@ -25,8 +25,8 @@ def get_data():
 
 @app.route('/jd/search')
 def search_data():
-	Running.run_search()
-	return "success"
+	res = Running.run_search()
+	return res
 
 
 @app.route('/jd/get_single_url')

@@ -45,12 +45,17 @@ def get_json(url):
 
 
 def run_search():
-	single_url_list = get_from_db.get_single_url('')
-	for item_name, url in single_url_list:
-		json1 = get_json(url)
-		res = parse_html.parse_single_json(json1, item_name)
-		print(res)
-		mongdb_con.save_single(res)
+	try:
+		single_url_list = get_from_db.get_single_url('')
+		for item_name, url in single_url_list:
+			json1 = get_json(url)
+			res = parse_html.parse_single_json(json1, item_name)
+			print(res)
+			mongdb_con.save_single(res)
+	except Exception:
+		return "fail"
+	else:
+		return "success"
 	'''
 	multiple_url_list = 
 	for item_name, url in multiple_url_list:
@@ -59,7 +64,3 @@ def run_search():
 		write_to_txt(item_name, res)
 		mongdb_con.save_multiple(res)
 	'''
-
-
-if __name__ == '__main__':
-	run_search()
