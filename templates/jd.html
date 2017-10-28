@@ -6,13 +6,13 @@
     <script src="{{ url_for('static', filename='js/jquery-2.2.3.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vue.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/echarts.js') }}"></script>
-    <script src="../static/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootbox.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}"/>
     <script type=text/javascript>
      	var $SCRIPT_ROOT = {{request.url_root|tojson|safe}};
  	  	$.ajaxSetup({    
-			sync : false    
+			sync : false
 		});
     </script>
 </head>
@@ -21,7 +21,7 @@
 		<div class="page-header">
 		  	<h1><span class="glyphicon glyphicon-zoom-in"></span>爬取京东商品价格  <small>By wjz</small></h1>
 		  	<button class="btn btn-success" onclick="scrapyToDB()"><span class="glyphicon glyphicon-star"></span>爬取今日数据</button>
-		  	<button class="btn btn-primary" onclick="openModal()"><span class="glyphicon glyphicon-plus">添加商品</button>
+		  	<button class="btn btn-primary" onclick="openModal()"><span class="glyphicon glyphicon-plus"></span>添加商品</button>
 		</div>
 		<div class="col-sm-6" id="app1">
 			<br />
@@ -88,10 +88,10 @@
 	function scrapyToDB(){
 		$.get($SCRIPT_ROOT + 'jd/search',function(res){
 			
-			if(res!="success"){
-				bootbox.alert('爬取失败');
-			}else{
+			if(res=="success"){
 				bootbox.alert('爬取成功');
+			}else{
+				bootbox.alert('爬取失败');
 			}
 		});
 	}
@@ -150,7 +150,7 @@
 			        	option.series[0].data = res;
 			        	myChart.hideLoading();
 			        	myChart.setOption(option);
-			        };
+			        }
 			  	})
 			}
 		}
@@ -159,7 +159,7 @@
 	var app2_data ={
 		'name':'',
 		'jd_url':''
-	}
+	};
 	var app2 = new Vue({
 		el:"#addModal",
 		data:app2_data,

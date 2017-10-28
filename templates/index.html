@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>wjz`s Demo</title>
+		<script src="{{ url_for('static', filename='js/jquery-2.2.3.min.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/vue.min.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+	    <script src="{{ url_for('static', filename='js/bootbox.js') }}"></script>
+	    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}"/>
+	    <script type=text/javascript>
+	     	var $SCRIPT_ROOT = {{request.url_root|tojson|safe}};
+	 	  	$.ajaxSetup({    
+				sync : false,
+				cache : false
+			});
+	    </script>
+	    
+	</head>
+	<body>
+		<div class="col-sm-offset-1 col-sm-10">
+			<nav class="navbar navbar-default" role="navigation">
+			    <div class="container-fluid">
+				    <div class="navbar-header">
+				        <a class="navbar-brand" href="#">Demo</a>
+				    </div>
+				    <div>
+				        <ul id="myTab" class="nav navbar-nav navbar-left" >
+				            <li class="active"><a href="#home" data-toggle="tab">主页</a></li>
+				            <li class="dropdown">
+				                <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown">微信<b class="caret"></b></a>
+				                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+				                    <li><a href="#weChat" tabindex="-1" data-toggle="tab">打开我的微信机器人</a></li>
+				                </ul>
+				            </li>
+				            <li class="dropdown">
+				                <a href="#" id="myTabDrop2" class="dropdown-toggle" data-toggle="dropdown">小程序<b class="caret"></b></a>
+				                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop2">
+				                    <li><a href="#picToTxt" tabindex="-1" data-toggle="tab">图片转字符画</a></li>
+				                    <li class="divider"></li>
+				                    <li><a href="#send_email" tabindex="-1" data-toggle="tab">发送定时邮件</a></li>
+				                    <li class="divider"></li>
+				                    <li><a href="#sPic" tabindex="-1" data-toggle="tab">图片缩放</a></li>
+				                </ul>
+				            </li>
+                            <!--
+				            <li class="dropdown">
+				                <a href="#" id="myTabDrop3" class="dropdown-toggle" data-toggle="dropdown">财务中心<b class="caret"></b></a>
+				                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop3">
+				                    <li><a href="#recharge_online" tabindex="-1" data-toggle="tab">在线充值</a></li>
+				                    <li class="divider"></li>
+				                    <li><a href="#payment_history" tabindex="-1" data-toggle="tab">付款记录</a></li>
+				                </ul>
+				            </li>
+				            -->
+				        </ul>
+                        <button type="button" class="btn btn-default navbar-left navbar-btn" onclick="jdDemo()">京东历史价格</button>
+                        <p class="navbar-text navbar-left"><span class="glyphicon glyphicon-leaf"></span>by wjz </p>
+				    </div>
+			    </div>
+			</nav>
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane fade active in" id="home">home</div>
+				<div class="tab-pane fade" id="weChat">
+					<div class="panel panel-info">
+						<div class="panel-heading">打开微信聊天机器人</div>
+						<div class="panel-body">
+                            扫码登录微信，打开微信聊天机器人。<br />
+					    	其他人发“。”+ 文字消息，可以与机器人聊天。<br /><br />
+					    	<button id="qr_button" type="button" class="btn btn-primary" onclick="wechat()"><span class="glyphicon glyphicon-qrcode"></span> 生成二维码</button><br />
+					    	<img id="wechat_qr" src=""/>
+					  	</div>
+					</div>
+                    <!--
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label for="my_waybill1" class="col-sm-2 control-label">运单号</label>
+							<div class="col-sm-5">
+								<input type="text" id="my_waybill1" class="form-control" placeholder="请输入运单号" />
+							</div>
+							<div class="col-lg-3">
+								<button type="button" class="btn btn-primary">查询</button>
+							</div>
+						</div>
+					</form>
+					-->
+				</div>
+				<div class="tab-pane fade" id="picToTxt">picToTxt</div>
+				<div class="tab-pane fade" id="send_email">send_email</div>
+				<div class="tab-pane fade" id="sPic">sPic</div>
+				<div class="tab-pane fade" id="recharge_online">recharge_online</div>
+				<div class="tab-pane fade" id="payment_history">payment_history</div>
+			</div>
+		</div>
+		<script>
+			function wechat(){
+			    $('#qr_button').attr('disabled','disabled')
+				$.post($SCRIPT_ROOT + 'wechat/getQR',{password:'wjz'},function(res){
+					$('#wechat_qr').attr('src',res);
+				})
+			}
+			function jdDemo() {
+                window.open($SCRIPT_ROOT + 'jd');
+            }
+		</script>
+	</body>
+</html>

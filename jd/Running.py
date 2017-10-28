@@ -22,45 +22,45 @@ single_url_list = [
 
 
 def write_to_txt(item, res_dict_list):
-	headers = ['time', 'group', 'price', 'name']
-	with open('../resultTXT/jd.txt', 'at', encoding="utf-8") as f:
-		f.write(item + "\r\n")
-		f_csv = csv.DictWriter(f, headers)
-		f_csv.writeheader()
-		f_csv.writerows(res_dict_list)
-		f.write("\r\n")
+    headers = ['time', 'group', 'price', 'name']
+    with open('../resultTXT/jd.txt', 'at', encoding="utf-8") as f:
+        f.write(item + "\r\n")
+        f_csv = csv.DictWriter(f, headers)
+        f_csv.writeheader()
+        f_csv.writerows(res_dict_list)
+        f.write("\r\n")
 
 
 def get_html(url):
-	resp = requests.get(url)
-	if resp.headers.get('content-type').find('charset') == -1:
-		resp.encoding = resp.apparent_encoding
-	return resp.text
+    resp = requests.get(url)
+    if resp.headers.get('content-type').find('charset') == -1:
+        resp.encoding = resp.apparent_encoding
+    return resp.text
 
 
 def get_json(url):
-	sku = url.split('/')[-1].strip(".html")
-	price_url = 'https://p.3.cn/prices/mgets?skuIds=J_' + sku
-	return json.loads(get_html(price_url))
+    sku = url.split('/')[-1].strip(".html")
+    price_url = 'https://p.3.cn/prices/mgets?skuIds=J_' + sku
+    return json.loads(get_html(price_url))
 
 
 def run_search():
-	try:
-		single_url_list = get_from_db.get_single_url('')
-		for item_name, url in single_url_list:
-			json1 = get_json(url)
-			res = parse_html.parse_single_json(json1, item_name)
-			print(res)
-			mongdb_con.save_single(res)
-	except Exception:
-		return "fail"
-	else:
-		return "success"
-	'''
-	multiple_url_list = 
-	for item_name, url in multiple_url_list:
-		html = get_html(url)
-		res = parse_html.parse_multiple(html, group=item_name)
-		write_to_txt(item_name, res)
-		mongdb_con.save_multiple(res)
-	'''
+    try:
+        single_url_list = get_from_db.get_single_url('')
+        for item_name, url in single_url_list:
+            json1 = get_json(url)
+            res = parse_html.parse_single_json(json1, item_name)
+            print(res)
+            mongdb_con.save_single(res)
+    except Exception:
+        return "fail"
+    else:
+        return "success"
+    '''
+    multiple_url_list = 
+    for item_name, url in multiple_url_list:
+        html = get_html(url)
+        res = parse_html.parse_multiple(html, group=item_name)
+        write_to_txt(item_name, res)
+        mongdb_con.save_multiple(res)
+    '''
