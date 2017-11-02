@@ -58,7 +58,7 @@
       textarea:
         "<textarea class='bootbox-input bootbox-input-textarea form-control'></textarea>",
       email:
-        "<input class='bootbox-input bootbox-input-email form-control' autocomplete='off' type='wjz_email' />",
+        "<input class='bootbox-input bootbox-input-email form-control' autocomplete='off' type='email' />",
       select:
         "<select class='bootbox-input bootbox-input-select form-control'></select>",
       checkbox:
