@@ -1,8 +1,7 @@
 var jz = {
-	get:function(url,callback){
-		$.ajax({
-			method:"get",
-			url:url,
+	load:function(url,callback){
+		$.ajax(url,{
+			type:"get",
 			async:false,
 			cache:false,
 			contentType:"application/json;charset=utf-8",
@@ -18,9 +17,8 @@ var jz = {
 		});
 	},
 	getAsync:function(url,callback){
-		$.ajax({
-			method:"get",
-			url:url,
+		$.ajax(url,{
+			type:"get",
 			async:true,
 			cache:false,
 			contentType:"application/json;charset=utf-8",
@@ -36,9 +34,8 @@ var jz = {
 		});
 	},
 	getByPara:function(url,para,callback){
-		$.ajax({
-			method:"get",
-			url:url,
+		$.ajax(url,{
+			type:"get",
 			async:false,
 			cache:false,
 			contentType:"application/json;charset=utf-8",
@@ -54,9 +51,8 @@ var jz = {
 		});
 	},
 	getByParaAsync:function(url,para,callback){
-		$.ajax({
-			method:"get",
-			url:url,
+		$.ajax(url,{
+			type:"get",
 			async:true,
 			cache:false,
 			contentType:"application/json;charset=utf-8",
@@ -73,10 +69,9 @@ var jz = {
 	},
 	postByPara:function(url,para,callback){
 		$.ajax(url,{
-			method:"POST",
+			type:"post",
 			async:false,
 			cache:false,
-			contentType:"application/json;charset=utf-8",
 			data:para,
 			success:function(result){
 				if($.isFunction(callback)){
@@ -88,13 +83,28 @@ var jz = {
 			}
 		});
 	},
+	postFileByPara:function(url,para,callback){
+		$.ajax(url,{
+			type:"POST",
+			async:false,
+			data:para,
+			contentType:false,
+			processData: false,
+			success:function(result){
+				if($.isFunction(callback)){
+					callback(result);
+				}
+			},
+			error:function(xhr,status,error){
+				alert(error);
+			}
+		});
+	},
 	postByParaAsync:function(url,para,callback){
-		$.ajax({
-			method:"POST",
-			url:url,
+		$.ajax(url,{
+			type:"post",
 			async:true,
 			cache:false,
-			contentType:"application/json;charset=utf-8",
 			data:para,
 			success:function(result){
 				if($.isFunction(callback)){

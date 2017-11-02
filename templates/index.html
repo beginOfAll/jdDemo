@@ -65,7 +65,7 @@
 					<div class="panel panel-info">
 						<div class="panel-heading">打开微信聊天机器人</div>
 						<div class="panel-body">
-                            扫码登录微信，打开微信聊天机器人。<br />
+							扫码登录微信，打开微信聊天机器人。<br />
 					    	其他人发“。”+ 文字消息，可以与机器人聊天。<br /><br />
 					    	<button id="qr_button" type="button" class="btn btn-primary" onclick="wechat()"><span class="glyphicon glyphicon-qrcode"></span> 生成二维码</button><br />
 					    	<img id="wechat_qr" src=""/>
@@ -86,12 +86,110 @@
 					-->
 				</div>
 				<div class="tab-pane fade" id="picToTxt">picToTxt</div>
-				<div class="tab-pane fade" id="send_email">send_email</div>
+				<div class="tab-pane fade" id="send_email">
+					<div class="panel panel-info" id="send_email_app">
+						<div class="panel-heading">输入邮件信息</div>
+						<div class="panel-body">
+							<form class="form-horizontal">
+								<div class="form-group">
+									<label class="col-sm-2 control-label"><span class="glyphicon glyphicon-alert"></span> 选择用户</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" v-model="emailFormDate.username"/>
+									</div>
+									<div class="col-sm-3">
+										<button type="button" class="btn btn-warning" v-on:click="getUserInfo()">加载信息</button>
+									</div>
+								</div>
+								<hr />
+								<div class="form-group">
+									<label class="col-sm-2 control-label">发件邮箱</label>
+									<div class="col-sm-5">
+										<input type="email" class="form-control" v-model="emailFormDate.from"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">发件邮箱密码</label>
+									<div class="col-sm-5">
+										<input type="password" class="form-control" v-model="emailFormDate.pwd"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">发件邮箱服务器</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" v-model="emailFormDate.server"/>
+									</div>
+									
+								</div>
+								<hr />
+								<div class="form-group">
+									<label class="col-sm-2 control-label">收件人邮箱</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" v-model="emailFormDate.to"/>
+										<p class="help-block">多个邮箱以逗号分隔.</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">抄送人邮箱</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" v-model="emailFormDate.cc"/>
+										<p class="help-block">多个邮箱以逗号分隔.</p>
+									</div>
+								</div>
+								<hr />
+								<div class="form-group">
+									<label class="col-sm-2 control-label">邮件标题</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" v-model="emailFormDate.title"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">邮件内容</label>
+									<div class="col-sm-5">
+										<textarea class="form-control" rows="8" cols="10" wrap="hard" v-model="emailFormDate.body"></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2" style="text-align:right">邮件附件1</label>
+									<div class="col-sm-5">
+										<input id="atta1" type="file"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2" style="text-align:right">邮件附件2</label>
+									<div class="col-sm-5">
+										<input id="atta2" type="file"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2" style="text-align:right">邮件附件3</label>
+									<div class="col-sm-5">
+										<input id="atta3" type="file"/>
+									</div>
+								</div>
+								<hr />
+								<div class="form-group">
+									<label class="col-sm-2 control-label">发送时间（今天）</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" placeholder="21:50:00" v-model="emailFormDate.send_time"/>
+										<p class="help-block">hh:mm:ss</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-5 col-lg-offset-6">
+										<button type="button" class="btn btn-primary" v-on:click="submit_email()">提交</button>
+									</div>
+								</div>
+								
+							</form>
+					  	</div>
+					</div>
+				</div>
 				<div class="tab-pane fade" id="sPic">sPic</div>
 				<div class="tab-pane fade" id="recharge_online">recharge_online</div>
 				<div class="tab-pane fade" id="payment_history">payment_history</div>
 			</div>
 		</div>
+		<script src="{{ url_for('static', filename='js/wjzJS.js') }}"></script>
 		<script>
 			function wechat(){
 			    $('#qr_button').attr('disabled','disabled')
@@ -102,6 +200,61 @@
 			function jdDemo() {
                 window.open($SCRIPT_ROOT + 'jd');
             }
+			var send_email_app = new Vue({
+				el:'#send_email_app',
+				data:{
+					emailFormDate:{
+						username:'',
+						from:'',
+						pwd:'',
+						server:'',
+						to:'',
+						cc:'',
+						title:'',
+						body:'',
+						atta1:'',
+						atta2:'',
+						atta3:'',
+						send_time:''
+					}
+				},
+				methods:{
+					getUserInfo:function(){
+						jz.postByPara($SCRIPT_ROOT + 'send_email/getUser',{username:this.emailFormDate.username,},function(res){
+							if(res){
+								send_email_app.emailFormDate = res;
+								bootbox.alert('加载成功');
+							}else{
+								bootbox.alert('未注册用户');
+							}
+						})
+					},
+					submit_email:function(){
+						var file1 = $('#atta1')[0].files[0];
+						var file2 = $('#atta2')[0].files[0];
+						var file3 = $('#atta3')[0].files[0];
+						var formd = new FormData();
+						if(file1){
+							formd.append('atta1',file1);
+						}
+						if(file2){
+							formd.append('atta2',file2);
+						}
+						if(file3){
+							formd.append('atta3',file3);
+						}
+						formd.append('emailData',JSON.stringify(this.emailFormDate))
+						
+						jz.postFileByPara($SCRIPT_ROOT + 'send_email/save',formd,function(res){
+							if(res){
+								bootbox.alert('延时发送启动成功');
+							}else{
+								bootbox.alert('延时发送启动失败');
+							}
+						})
+					}
+				}
+			})
 		</script>
 	</body>
 </html>

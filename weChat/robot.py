@@ -18,7 +18,7 @@ def qr_success(uuid, status, qrcode):
 
 
 def open_bot():
-    bot = Bot(qr_callback=qr_success())
+    bot = Bot(qr_callback=qr_success)
     # wl = list()
     # wl.append(bot.friends().search('王建忠的机器人小号')[0])
     # wl.append(bot.friends().search('王琳')[0])
