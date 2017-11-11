@@ -16,9 +16,11 @@ def index():
 @app.route('/wechat/getQR', methods=['POST'])
 def getQR():
 	psw = request.form['password']
+	mode = request.form['mode']
+	text = request.form['text']
 	png = 'data:image/png;base64,'
 	if psw == 'wjz':
-		png += base64.b64encode(robot.wechat()).decode('ascii')
+		png += base64.b64encode(robot.wechat(mode, text)).decode('ascii')
 	return Response(png, mimetype='image/png')
 
 
@@ -45,7 +47,7 @@ def saveInfo():
 	except Exception:
 		atta2_path = ''
 	try:
-		atta3_path = config_file.save_atta(request.files['atta3'],emailData['username'])
+		atta3_path = config_file.save_atta(request.files['atta3'], emailData['username'])
 	except Exception:
 		atta3_path = ''
 

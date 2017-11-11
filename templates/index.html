@@ -67,23 +67,24 @@
 						<div class="panel-body">
 							扫码登录微信，打开微信聊天机器人。<br />
 					    	其他人发“。”+ 文字消息，可以与机器人聊天。<br /><br />
-					    	<button id="qr_button" type="button" class="btn btn-primary" onclick="wechat()"><span class="glyphicon glyphicon-qrcode"></span> 生成二维码</button><br />
-					    	<img id="wechat_qr" src=""/>
+					    	<button id="qr_button1" type="button" class="btn btn-primary" onclick="wechat(1)"><span class="glyphicon glyphicon-qrcode"></span> 生成二维码</button><br />
+					    	<img id="wechat_qr1" src=""/>
 					  	</div>
 					</div>
-                    <!--
-					<form class="form-horizontal">
-						<div class="form-group">
-							<label for="my_waybill1" class="col-sm-2 control-label">运单号</label>
-							<div class="col-sm-5">
-								<input type="text" id="my_waybill1" class="form-control" placeholder="请输入运单号" />
+					<div class="panel panel-info">
+						<div class="panel-heading">打开微信自动回复</div>
+						<div class="panel-body">
+							微信进入忙碌模式，自动回复好友消息<br />
+					    	<div class="form-group">
+								<label class="col-sm-2 control-label">消息内容</label>
+								<div class="col-sm-9">
+									<input id="weChat_reply_text" type="text" class="form-control"/>
+								</div>
 							</div>
-							<div class="col-lg-3">
-								<button type="button" class="btn btn-primary">查询</button>
-							</div>
-						</div>
-					</form>
-					-->
+					    	<button id="qr_button2" type="button" class="btn btn-primary" onclick="wechat(2)"><span class="glyphicon glyphicon-qrcode"></span> 生成二维码</button><br />
+					    	<img id="wechat_qr2" src=""/>
+					  	</div>
+					</div>
 				</div>
 				<div class="tab-pane fade" id="picToTxt">picToTxt</div>
 				<div class="tab-pane fade" id="send_email">
@@ -191,10 +192,12 @@
 		</div>
 		<script src="{{ url_for('static', filename='js/wjzJS.js') }}"></script>
 		<script>
-			function wechat(){
-			    $('#qr_button').attr('disabled','disabled')
-				$.post($SCRIPT_ROOT + 'wechat/getQR',{password:'wjz'},function(res){
-					$('#wechat_qr').attr('src',res);
+			function wechat(mo){
+			    $('#qr_button1').attr('disabled','disabled')
+			    $('#qr_button2').attr('disabled','disabled')
+			    var replay_text = $('#weChat_reply_text').val()
+				$.post($SCRIPT_ROOT + 'wechat/getQR',{password:'wjz','mode':mo,'text':replay_text},function(res){
+					$('#wechat_qr'+mo).attr('src',res);
 				})
 			}
 			function jdDemo() {
