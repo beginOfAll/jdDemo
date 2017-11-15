@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <script src="{{ url_for('static', filename='js/jquery-2.2.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vue.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootbox.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}"/>
+    <script src="{{ url_for('static', filename='js/wjzJS.js') }}"></script>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="center-block" style="width: 600PX;">
+            <div class="jumbotron" id="loginApp">
+                <h1>欢迎登录！</h1>
+                <p>The great pleasure in life is doing what people say you cannot do.</p>
+                <br/><br/>
+                <form class="form-horizontal" id="loginForm">
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" id="inputUsername" name="username" class="form-control"
+                               placeholder="username" required v-model="username">
+                    </div>
+                    <div class="form-group" v-if="is_register">
+                        <label for="inputEmail">邮箱地址</label>
+                        <input type="email" id="inputEmail" name="email" class="form-control"
+                               placeholder="Email address" required v-model="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword">密码</label>
+                        <input type="password" id="inputPassword" name="password" class="form-control"
+                               placeholder="Password" required v-model="password">
+                    </div>
+                    <div class="form-group" v-if="is_register">
+                        <label for="inputPassword2">密码确认</label>
+                        <input type="password" id="inputPassword2" name="password_comfim" class="form-control"
+                               placeholder="Password" required v-model="password_comfim">
+                    </div>
+                    <div class="form-group">
+                        <label v-if="!is_register" class="col-sm-6" for="inputPassword"><a @click="is_register = true">没有账号，注册</a></label>
+                        <label v-if="is_register" class="col-sm-6" for="inputPassword"><a @click="is_register = false">已有账号，登录</a></label>
+                        <button class="btn btn-lg btn-primary btn-block" type="button" @click="login()"
+                                v-if="!is_register">登录
+                        </button>
+                        <button class="btn btn-lg btn-primary btn-block" type="button" @click="register()"
+                                v-if="is_register">注册
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var $SCRIPT_ROOT = {{request.url_root|tojson|safe}};
+    var loginApp = new Vue({
+        el: '#loginApp',
+        data: {
+            is_register: false,
+            username: '',
+            email: '',
+            password: '',
+            password_comfim: ''
+        },
+        methods: {
+            login: function (e) {
+                if (this.username != '' || this.password != '') {
+                    jz.postByPara($SCRIPT_ROOT + "{{ url_for('auth.login') }}".substr(1), this.$data, function (res) {
+                        if (!res) {
+                            bootbox.alert('登录失败')
+                        } else {
+                            window.location.replace("{{ url_for('index')}}")
+                        }
+                    })
+                } else {
+                    bootbox.alert('请输入用户名密码')
+                }
+            },
+            register: function (e) {
+                {#if (this.username != '' || this.password != '' || this.email != '' || this.password_comfim != '') {
+                    if (this.password == this.password_comfim) {
+                        jz.postByPara('register', this.$data, function (res) {
+                            if (res) {
+                                bootbox.alert('注册成功,返回登录')
+                                loginApp.username = "";
+                                loginApp.email = "";
+                                loginApp.password = "";
+                                loginApp.password_comfim = "";
+                                loginApp.is_register = false;
+                            } else {
+                                bootbox.alert('注册失败')
+                            }
+                        })
+                    } else {
+                        bootbox.alert('两次密码不一致')
+                    }
+                } else {
+                    bootbox.alert('请输入全部注册信息')
+                }#}
+                bootbox.alert('注册未开放')
+            }
+        }
+    });
+</script>
+</body>
+</html>

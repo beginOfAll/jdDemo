@@ -56,6 +56,17 @@
 				        </ul>
                         <button type="button" class="btn btn-default navbar-left navbar-btn" onclick="jdDemo()">京东历史价格</button>
                         <p class="navbar-text navbar-left"><span class="glyphicon glyphicon-leaf"></span>by wjz </p>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#"><span class="glyphicon glyphicon-user">
+                                {% if current_user.is_authenticated %}
+                                    {{ current_user.name }}
+                                {% else %}
+                                    未登录
+                                {% endif %}
+                            </span>
+                            </a></li>
+                            <li><a href="{{ url_for('auth.logout') }}"><span class="glyphicon glyphicon-log-out"></span> 注销</a></li>
+                        </ul>
 				    </div>
 			    </div>
 			</nav>
@@ -74,19 +85,69 @@
 					<div class="panel panel-info">
 						<div class="panel-heading">打开微信自动回复</div>
 						<div class="panel-body">
-							微信进入忙碌模式，自动回复好友消息<br />
-					    	<div class="form-group">
+							<label class="col-sm-12 control-label">微信进入忙碌模式，自动回复好友消息</label>
+					    	<div class="col-sm-12">
 								<label class="col-sm-2 control-label">消息内容</label>
-								<div class="col-sm-9">
+								<div class="col-sm-6">
 									<input id="weChat_reply_text" type="text" class="form-control"/>
 								</div>
 							</div>
-					    	<button id="qr_button2" type="button" class="btn btn-primary" onclick="wechat(2)"><span class="glyphicon glyphicon-qrcode"></span> 生成二维码</button><br />
+							<div class="col-sm-12">
+								<button id="qr_button2" type="button" class="btn btn-primary" onclick="wechat(2)"><span class="glyphicon glyphicon-qrcode"></span> 生成二维码</button><br />
+							</div>
 					    	<img id="wechat_qr2" src=""/>
 					  	</div>
 					</div>
 				</div>
-				<div class="tab-pane fade" id="picToTxt">picToTxt</div>
+				<div class="tab-pane fade" id="picToTxt">
+					<div class="panel panel-info" id="picToTxt_app">
+						<div class="panel-heading">选择图片</div>
+						<div class="panel-body">
+							<div class="form-group col-sm-12">
+								<label class="col-sm-2" style="text-align:right">字符画文件行数</label>
+								<div class="col-sm-3">
+									<select id="picToTxt_lines" name="picToTxt_lines" class="form-control">
+										<option value="50">50</option>
+										<option value="75">75</option>
+										<option value="100">100</option>
+										<option value="125">125</option>
+										<option value="150">150</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group col-sm-12">
+								<label class="col-sm-2" style="text-align:right">选择图片</label>
+								<div class="col-sm-5">
+									<input id="picToTxt_pic" type="file"/>
+									<label>请使用英文文件名</label>
+								</div>
+							</div>
+							<label class="col-sm-offset-3 col-sm-9 text-muted">支持图片格式：'*.png', '*.jpg', '*.jpeg', '*.gif'</label>
+							<label class="col-sm-offset-3 col-sm-9 text-muted">支持图片大小：2M以下</label>
+							<div class="col-sm-offset-2 col-sm-10">
+								<button type="button" class="btn btn-primary" onclick="picToTxt_download()">下载</button><br />
+							</div>
+							<div class="alert alert-warning col-sm-12">由于字符解析图片的解析力有限，建议选择内容简洁，色彩简单的图片。<br />点击下方示例：</div>
+							<div class="row">
+								<div class="col-sm-2">
+									<a href="{{ url_for('static', filename='pic/wm.txt') }}" class="thumbnail">
+										<img src="{{ url_for('static', filename='pic/wm.jpg') }}" alt="通用的占位符缩略图"/>
+									</a>
+								</div>
+								<div class="col-sm-2">
+									<a href="{{ url_for('static', filename='pic/yang.txt') }}" class="thumbnail">
+										<img src="{{ url_for('static', filename='pic/yang.jpg') }}" alt="通用的占位符缩略图"/>
+									</a>
+								</div>
+								<div class="col-sm-2">
+									<a href="{{ url_for('static', filename='pic/yao.txt') }}" class="thumbnail">
+										<img src="{{ url_for('static', filename='pic/yao.jpg') }}" alt="通用的占位符缩略图"/>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="tab-pane fade" id="send_email">
 					<div class="panel panel-info" id="send_email_app">
 						<div class="panel-heading">输入邮件信息</div>
@@ -193,16 +254,37 @@
 		<script src="{{ url_for('static', filename='js/wjzJS.js') }}"></script>
 		<script>
 			function wechat(mo){
-			    $('#qr_button1').attr('disabled','disabled')
-			    $('#qr_button2').attr('disabled','disabled')
 			    var replay_text = $('#weChat_reply_text').val()
-				$.post($SCRIPT_ROOT + 'wechat/getQR',{password:'wjz','mode':mo,'text':replay_text},function(res){
-					$('#wechat_qr'+mo).attr('src',res);
-				})
+			    if(mo = 2 && replay_text==""){
+			    	bootbox.alert('请输入自动回复消息内容！');
+			    }else{
+			    	$('#qr_button1').attr('disabled','disabled')
+			    	$('#qr_button2').attr('disabled','disabled')
+			    	$.post($SCRIPT_ROOT + 'wechat/getQR',{password:'wjz','mode':mo,'text':replay_text},function(res){
+						$('#wechat_qr'+mo).attr('src',res);
+					})
+			    }
 			}
 			function jdDemo() {
                 window.open($SCRIPT_ROOT + 'jd');
             }
+			function picToTxt_download(){
+				var pic = $('#picToTxt_pic')[0].files[0];
+				var lines = $('#picToTxt_lines').val();
+				var formd = new FormData();
+				if(pic){
+					formd.append('pic',pic);
+				}
+				formd.append('lines',lines)
+				jz.postFileByPara($SCRIPT_ROOT + 'stools/picTotxt', formd,function(res){
+					if(res){
+						var d_url = "/stools/download/" + res;
+						window.open(d_url);
+					}else{
+						bootbox.alert('转换失败');
+					}
+				})
+			}
 			var send_email_app = new Vue({
 				el:'#send_email_app',
 				data:{
@@ -249,7 +331,9 @@
 						formd.append('emailData',JSON.stringify(this.emailFormDate))
 						
 						jz.postFileByPara($SCRIPT_ROOT + 'send_email/save',formd,function(res){
-							if(res){
+							if(res=="visitor"){
+								bootbox.alert('权限限制，无法操作');
+							}else if(res){
 								bootbox.alert('延时发送启动成功');
 							}else{
 								bootbox.alert('延时发送启动失败');
